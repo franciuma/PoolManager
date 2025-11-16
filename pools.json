@@ -7,6 +7,17 @@
       "precio": 5,
       "horario": "16:00-18:00",
       "apertura_inscripciones": "2025-11-13T10:00:00",
+      "max_pistas": 2,
+      "jugadores": [],
+      "interesados": []
+    },
+    {
+      "id": "sabado_10_12",
+      "nombre": "Pool sábado 10-12h",
+      "precio": 4,
+      "horario": "10:00-12:00",
+      "apertura_inscripciones": "2025-11-14T09:00:00",
+      "max_pistas": 3,
       "jugadores": [],
       "interesados": []
     }
