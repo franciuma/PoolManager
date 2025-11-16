@@ -4,14 +4,14 @@ import json
 from datetime import datetime
 import threading
 import time
-import config 
+import os
 
 # Configuración
 DATA_FILE = "pools.json"
 app = Flask(__name__)
 
 # Número(s) de admin fijo(s)
-ADMINS = config.ADMINS
+ADMINS = os.environ.get("ADMINS", "").split(",")
 
 # Cargar y guardar datos
 def cargar_datos():
