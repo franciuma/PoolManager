@@ -1,9 +1,10 @@
 {
+  "usuarios": [],
   "pools": [
     {
       "id": "viernes_16_18",
-      "nombre": "Pool guerreros",
-      "precio": 6.5,
+      "nombre": "Pool viernes 16-18h",
+      "precio": 5,
       "horario": "16:00-18:00",
       "apertura_inscripciones": "2025-11-13T10:00:00",
       "jugadores": [],

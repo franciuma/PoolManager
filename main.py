@@ -9,13 +9,16 @@ import time
 DATA_FILE = "pools.json"
 app = Flask(__name__)
 
+# Número(s) de admin fijo(s)
+ADMINS = ["whatsapp:+34600111222"]  # Pon aquí tu número de WhatsApp
+
 # Cargar y guardar datos
 def cargar_datos():
     try:
         with open(DATA_FILE, "r") as f:
             return json.load(f)
     except FileNotFoundError:
-        return {"admins": [], "pools": []}
+        return {"pools": [], "usuarios": []}
 
 def guardar_datos(data):
     with open(DATA_FILE, "w") as f:
@@ -35,7 +38,7 @@ def notificar_apertura():
                 pool["notificado"] = True
                 pool["interesados"] = []  # limpiar interesados
                 guardar_datos(data)
-        time.sleep(60)  # revisar cada minuto
+        time.sleep(60)
 
 # Función simulada de envío (Twilio envía desde webhook)
 def enviar_mensaje(to, mensaje):
@@ -52,12 +55,26 @@ def webhook():
     user = request.values.get("From", "")
     resp = MessagingResponse()
 
-    # Cargar datos actualizados
     global data
     data = cargar_datos()
 
+    # Inicializar lista de usuarios si no existe
+    if "usuarios" not in data:
+        data["usuarios"] = []
+
+    # Mensaje de bienvenida para usuarios nuevos
+    if user not in data["usuarios"]:
+        data["usuarios"].append(user)
+        guardar_datos(data)
+        resp.message(
+            "👋 ¡Hola! Bienvenido a PoolManager.\n"
+            "Aquí podrás apuntarte a pools de pádel, recibir notificaciones y ver tus horarios.\n"
+            "Escribe 'ayuda' para ver todos los comandos disponibles."
+        )
+        return str(resp)
+
     # Admin
-    is_admin = user in data["admins"]
+    is_admin = user in ADMINS
 
     # Comandos de admin
     if is_admin:
@@ -135,7 +152,6 @@ def webhook():
             if datetime.now() < apertura:
                 resp.message(f"⏳ La inscripción para {pool['nombre']} abre el {apertura.strftime('%Y-%m-%d %H:%M')}. Usa 'apuntarme_alerta {pool_id}' para ser avisado.")
                 return str(resp)
-            # Añadir jugador
             pool["jugadores"].append({"numero": user, "pareja": pareja})
             guardar_datos(data)
             if pareja:
